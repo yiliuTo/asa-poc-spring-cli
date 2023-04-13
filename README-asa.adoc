@@ -1,0 +1,63 @@
+# One-step Deployment ASA Experience with Spring CLI
+
+This poc aims to use a single CLI command `spring asa deploy` to implement one-step deployment in Azure Spring Apps(ASA) for both single module and multi module maven scenarios.
+
+## Prerequisites
+The commands will automatically create apps in ASA and then deploy the local jar to ASA, but it requires that users have already created the below Azure resources:
+- Azure subscription
+- Azure resource group
+- Azure Spring Apps service instance
+
+## How to use
+
+
+## Features
+The supported features of `spring asa deploy` currently contains:
+
+### Deploy directly from the single module maven project
+For the case of a single module maven project, `spring asa deploy` can automatically detect the jar file, jdk version and app name from the `pom.xml` file and application.properties / application.yaml file. The information to detect and the sources are:
+
+- app name = ${spring.application.name: artifact-id}
+- java version = ${java.version} from pom.xml
+- artifact-path = target/${artifact-id}-${version}.${packaging}
+
+Other deployment information will fall back to the default options.
+
+### Deploy the single module maven project with the manifest file
+
+For a single module maven project, users can also choose to override the above values by providing a `manifest.yml` file in the root of the project.
+
+The format and currently supported deployment configuration of the manifest file is as below:
+```yaml
+  defaults:
+    subscription_id: xxx
+    resource_group: xxx
+    azure_spring_apps_name: xxx
+
+  applications:
+  - name: my-app
+    memory: 512M  ## optional, the defaut value is 2GB
+    instances: 2  ## optional, the defaut value is 1
+    path: /path/to/app/bits
+    subscription_id: xxx ## optional, will override the above default values, same for the below two
+    resource_group: xxx
+    azure_spring_apps_name: xxx
+```
+
+### Deploy the multiple module maven project with the manifest file
+For the multiple module maven project, the manifest file is required, and we don't detect automatically.
+
+The format of the manifest file is the same as above.
+
+### Print application logs after deployment
+When the deployment is done, the command will fetch the application log and print it out.
+
+## Known issues
+
+1. When detecting property `spring.application.name` from application configuration for the app name, we only detect the property defined in the default profile configuration, e.g., if users configure in an application-dev.yaml, then it won't take effects for `spring asa deploy`.
+
+2. When choosing to use manifest file for single module deployment, we will not detect the jar file or application name, except for the jdk version. So it's necessary to configure the `applications[x].name` and `application[x].path` properties.
+
+3. Currently, the deployment for multiple modules is executed in a sequential way instead of paralleling.
+
+4. When printing application logs, it's now hard coded that we only print 500 lines and not in a streaming way.
