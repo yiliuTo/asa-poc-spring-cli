@@ -1,6 +1,6 @@
 # One-step Deployment ASA Experience with Spring CLI
 
-This poc aims to use a single CLI command `spring asa deploy` to implement one-step deployment in Azure Spring Apps(ASA) for both single module and multi module maven scenarios.
+This poc aims to use a single CLI command `spring asa deploy` to implement one-step deployment in Azure Spring Apps(ASA) for both single module and multiple module maven scenarios.
 
 ## Prerequisites
 The commands will automatically create apps in ASA and then deploy the local jar to ASA, but it requires that users have already created the below Azure resources:
@@ -10,6 +10,28 @@ The commands will automatically create apps in ASA and then deploy the local jar
 
 ## How to use
 
+### Single module maven project
+There are two solutions, run the command `spring asa deploy` directly in an interactive mode or prepare a manifest.yml then run the command.
+
+#### Run in an interactive mode
+1. Step into the root of your project and package it.
+2. Run the command `spring asa deploy`.
+3. Answer the questions by passing the required information.
+4. The deployment will start.
+
+#### Run with manifest file
+1. Step into the root of your project and package it.
+2. Create a `manifest.yml` file in the root of your project, the format is introduced in the below section.
+3. Run the command `spring asa deploy`.
+4. The deployment will start.
+
+### Multiple module maven project
+For the multiple module maven project, the manifest file is required.
+
+1. Step into the root of your project and package it.
+2. Create a `manifest.yml` file in the root of your project, the format is introduced in the below section.
+3. Run the command `spring asa deploy`.
+4. The deployment will start.
 
 ## Features
 The supported features of `spring asa deploy` currently contains:
